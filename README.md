@@ -18,9 +18,13 @@ A modern, full-featured podcast streaming application bootstrapped with **React 
 
 ## 📲 Download Android APK
 
-Get the pre-built APK ready to install on your Android phone or tablet:
+Get the pre-built, production-ready APK to install directly on your Android device:
 
-➡️ **[Download WaveCast.apk (Latest Release)](https://github.com/Mehul214/WavecastApp/releases/latest)**
+| File | Size | Direct Download Link |
+| :--- | :--- | :--- |
+| **WaveCast.apk** | ~27 MB | [⬇️ **Download WaveCast.apk (v1.0.0)**](https://github.com/Mehul214/WavecastApp/releases/download/v1.0.0/WaveCast.apk) |
+
+> 💡 *Or view all versions on the [GitHub Releases Page](https://github.com/Mehul214/WavecastApp/releases/tag/v1.0.0).*
 
 ---
 
