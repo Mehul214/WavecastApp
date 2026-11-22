@@ -1,6 +1,16 @@
 # WaveCast - React Native Podcast App
 
-A modern, full-featured podcast streaming application bootstrapped with **React Native Community CLI** (`@react-native-community/cli`), using **100% free open APIs** (Apple iTunes Search API + direct RSS XML Feeds) and **`@rntp/player`** for native Android audio streaming and background playback.
+A modern, full-featured podcast streaming application bootstrapped with **React Native Community CLI** (`@react-native-community/cli`), using **100% free open APIs** (Apple iTunes Search API + direct RSS XML Feeds) and **`@rntp/player`** for native iOS & Android audio streaming and background playback.
+
+---
+
+## 📱 Screenshots
+
+<p align="center">
+  <img src="screenshots/discover.png" width="320" alt="WaveCast Discover Screen" />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="screenshots/player.jpg" width="320" alt="WaveCast Full Player Screen" />
+</p>
 
 ---
 
