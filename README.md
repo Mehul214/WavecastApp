@@ -43,16 +43,9 @@ You can install WaveCast using any of the following open-source methods:
 
 ## 📱 Screenshots
 
-<p align="center">
-  <img src="screenshots/discover.png" width="185" alt="Discover Podcasts" />
-  <img src="screenshots/player.png" width="185" alt="Now Playing Player" />
-  <img src="screenshots/favorites.png" width="185" alt="Favorites" />
-  <img src="screenshots/history.png" width="185" alt="Listening History" />
-  <img src="screenshots/settings.png" width="185" alt="Settings & Preferences" />
-</p>
-
-| 🔍 Discover | 🎧 Now Playing | 💖 Favorites | ⏱ History | ⚙️ Settings |
+| 🔍 **Discover** | 🎧 **Now Playing** | 💖 **Favorites** | ⏱ **History** | ⚙️ **Settings** |
 | :---: | :---: | :---: | :---: | :---: |
+| <img src="screenshots/discover.png" width="150" alt="Discover Podcasts" /> | <img src="screenshots/player.png" width="150" alt="Now Playing Player" /> | <img src="screenshots/favorites.png" width="150" alt="Favorites" /> | <img src="screenshots/history.png" width="150" alt="Listening History" /> | <img src="screenshots/settings.png" width="150" alt="Settings & Preferences" /> |
 | Category exploration & live search | Scrubbing, ±15s skip & show notes | Saved podcast library | Resumable episodes & progress | Theme & playback controls |
 
 ---
