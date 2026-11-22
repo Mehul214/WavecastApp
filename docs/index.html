@@ -116,10 +116,11 @@
     .screenshot-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 12px;
+      border-radius: 20px;
+      padding: 10px;
       box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
-      max-width: 320px;
+      max-width: 220px;
+      flex: 1 1 190px;
     }
     .screenshot-card img {
       width: 100%;
@@ -250,9 +251,23 @@
       <div class="screenshots-grid">
         <div class="screenshot-card">
           <img src="screenshots/discover.png" alt="Discover Podcasts" />
+          <div style="font-size: 13px; font-weight: 700; margin-top: 8px; color: var(--text);">Discover</div>
         </div>
         <div class="screenshot-card">
-          <img src="screenshots/player.jpg" alt="Player Modal" />
+          <img src="screenshots/player.png" alt="Player Modal" />
+          <div style="font-size: 13px; font-weight: 700; margin-top: 8px; color: var(--text);">Now Playing</div>
+        </div>
+        <div class="screenshot-card">
+          <img src="screenshots/favorites.png" alt="Saved Favorites" />
+          <div style="font-size: 13px; font-weight: 700; margin-top: 8px; color: var(--text);">Favorites</div>
+        </div>
+        <div class="screenshot-card">
+          <img src="screenshots/history.png" alt="Listening History" />
+          <div style="font-size: 13px; font-weight: 700; margin-top: 8px; color: var(--text);">History & Resume</div>
+        </div>
+        <div class="screenshot-card">
+          <img src="screenshots/settings.png" alt="Settings & Preferences" />
+          <div style="font-size: 13px; font-weight: 700; margin-top: 8px; color: var(--text);">App Preferences</div>
         </div>
       </div>
     </section>
