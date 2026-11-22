@@ -4,6 +4,12 @@
   <a href="https://github.com/Mehul214/WavecastApp/releases/latest">
     <img src="https://img.shields.io/badge/Download-Android%20APK-brightgreen.svg?style=flat-square&logo=android" alt="Download APK" />
   </a>
+  <a href="https://apps.obtainium.imranr.dev/add?r=https://github.com/Mehul214/WavecastApp">
+    <img src="https://img.shields.io/badge/Obtainium-Auto%20Update-9C27B0?style=flat-square" alt="Obtainium" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License MIT" />
+  </a>
   <a href="https://buymeacoffee.com/mehulreshac" target="_blank">
     <img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee" />
   </a>
@@ -14,17 +20,20 @@
 
 A modern, full-featured podcast streaming application bootstrapped with **React Native Community CLI** (`@react-native-community/cli`), using **100% free open APIs** (Apple iTunes Search API + direct RSS XML Feeds) and **`@rntp/player`** for native iOS & Android audio streaming and background playback.
 
+🌐 **Web Landing Page**: [https://mehul214.github.io/WavecastApp/](https://mehul214.github.io/WavecastApp/)
+
 ---
 
-## 📲 Download Android APK
+## 📲 Download & Install (Open Source Platforms)
 
-Get the pre-built, production-ready APK to install directly on your Android device:
+You can install WaveCast using any of the following open-source methods:
 
-| File | Size | Direct Download Link |
+| Method | Description | Link |
 | :--- | :--- | :--- |
-| **WaveCast.apk** | ~27 MB | [⬇️ **Download WaveCast.apk (v1.0.0)**](https://github.com/Mehul214/WavecastApp/releases/download/v1.0.0/WaveCast.apk) |
-
-> 💡 *Or view all versions on the [GitHub Releases Page](https://github.com/Mehul214/WavecastApp/releases/tag/v1.0.0).*
+| **Direct APK** | Standalone pre-built APK for any Android phone/tablet (~27 MB) | [⬇️ **Download WaveCast.apk (v1.0.0)**](https://github.com/Mehul214/WavecastApp/releases/download/v1.0.0/WaveCast.apk) |
+| **Obtainium** | 1-click install & automatic updates directly from GitHub Releases | [⚡️ **Add to Obtainium**](https://apps.obtainium.imranr.dev/add?r=https://github.com/Mehul214/WavecastApp) |
+| **GitHub Releases** | Official releases page with assets & changelogs | [📦 **View v1.0.0 Release**](https://github.com/Mehul214/WavecastApp/releases/tag/v1.0.0) |
+| **Web Site** | Clean web showcase with one-tap downloads | [🌐 **WaveCast Web Page**](https://mehul214.github.io/WavecastApp/) |
 
 ---
 

@@ -1,0 +1,9 @@
+WaveCast is a modern, lightweight, and 100% free podcast player for Android.
+
+Key Features:
+• Free Podcast Discovery: Search hundreds of thousands of podcasts across Technology, News, True Crime, Comedy, Science, and Business using the public Apple iTunes Directory (no account required).
+• Direct RSS Audio Streaming: Stream full episodes directly from publishers' original MP3 and AAC audio feeds.
+• Background & Lock Screen Playback: Complete background audio playback with lock screen and notification media controls.
+• Smart Playback Controls: Dynamic playback speeds (1x, 1.25x, 1.5x, 2x), quick 15s jump controls, and full scrubber timeline.
+• Offline Favorites & History: Bookmark your favorite shows and automatically resume playback right where you left off.
+• 100% Free & Open Source: No subscriptions, no telemetry trackers, and zero advertisements.
