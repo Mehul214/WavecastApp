@@ -1,5 +1,9 @@
 {
   "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "customConditions": ["react-native-legacy-deep-imports"]
+  },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules", "**/Pods"]
 }
