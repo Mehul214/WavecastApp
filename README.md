@@ -7,6 +7,9 @@
   <a href="https://apps.obtainium.imranr.dev/add?r=https://github.com/Mehul214/WavecastApp">
     <img src="https://img.shields.io/badge/Obtainium-Auto%20Update-9C27B0?style=flat-square" alt="Obtainium" />
   </a>
+  <a href="https://github.com/RookieEnough/Orion-Data/issues/3253">
+    <img src="https://img.shields.io/badge/Orion%20Store-Listing%20Submitted-00BCD4?style=flat-square" alt="Orion Store" />
+  </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License MIT" />
   </a>
@@ -32,6 +35,7 @@ You can install WaveCast using any of the following open-source methods:
 | :--- | :--- | :--- |
 | **Direct APK** | Standalone pre-built APK for any Android phone/tablet (~27 MB) | [⬇️ **Download WaveCast.apk (v1.0.0)**](https://github.com/Mehul214/WavecastApp/releases/download/v1.0.0/WaveCast.apk) |
 | **Obtainium** | 1-click install & automatic updates directly from GitHub Releases | [⚡️ **Add to Obtainium**](https://apps.obtainium.imranr.dev/add?r=https://github.com/Mehul214/WavecastApp) |
+| **Orion Store** | Open-source Android app client catalog | [🪐 **Orion Store Request #3253**](https://github.com/RookieEnough/Orion-Data/issues/3253) |
 | **GitHub Releases** | Official releases page with assets & changelogs | [📦 **View v1.0.0 Release**](https://github.com/Mehul214/WavecastApp/releases/tag/v1.0.0) |
 | **Web Site** | Clean web showcase with one-tap downloads | [🌐 **WaveCast Web Page**](https://mehul214.github.io/WavecastApp/) |
 
