@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
+  Image,
+  Linking,
   ScrollView,
+  Share,
   StyleSheet,
   Switch,
   Text,
@@ -19,6 +22,10 @@ import {
   Heart,
   HardDrive,
   Info,
+  Coffee,
+  QrCode,
+  ExternalLink,
+  Sparkles,
 } from 'lucide-react-native';
 import { AppSettings } from '../services/settingsService';
 import { Theme } from '../theme/theme';
@@ -40,6 +47,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({
   theme,
   bottomPadding,
 }) => {
+  const [showQrCode, setShowQrCode] = useState(false);
   const isDark = theme.isDark;
   const iconAccent = isDark ? '#818CF8' : '#6366F1';
   const sectionTitleColor = isDark ? '#818CF8' : '#4F46E5';
@@ -521,7 +529,167 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({
         </View>
       </View>
 
-      {/* 5. ABOUT APP */}
+      {/* 5. SUPPORT & DONATE */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>
+          SUPPORT & DONATE
+        </Text>
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: theme.card,
+              borderColor: theme.cardBorder,
+            },
+            !isDark && styles.cardLightShadow,
+          ]}
+        >
+          {/* Header intro */}
+          <View style={styles.donateHeaderRow}>
+            <View
+              style={[
+                styles.rowIconContainer,
+                { backgroundColor: 'rgba(234, 179, 8, 0.15)' },
+              ]}
+            >
+              <Coffee size={20} color="#EAB308" />
+            </View>
+            <View style={styles.rowTextCol}>
+              <Text style={[styles.rowTitle, { color: theme.text }]}>
+                Support App Maintenance
+              </Text>
+              <Text style={[styles.rowSubtitle, { color: theme.textMuted }]}>
+                WaveCast is 100% free with no ads. Your support helps keep servers running and new features coming!
+              </Text>
+            </View>
+          </View>
+
+          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+
+          {/* Buy Me a Coffee Button */}
+          <TouchableOpacity
+            style={[styles.coffeeButton, !isDark && styles.cardLightShadow]}
+            onPress={() => Linking.openURL('https://buymeacoffee.com/mehulreshac')}
+            activeOpacity={0.8}
+          >
+            <Coffee size={18} color="#000000" />
+            <Text style={styles.coffeeButtonText}>Buy Me a Coffee</Text>
+            <ExternalLink size={14} color="#000000" style={{ marginLeft: 4 }} />
+          </TouchableOpacity>
+
+          {/* UPI Payment Option */}
+          <View style={styles.upiCardContainer}>
+            <View style={styles.upiHeaderRow}>
+              <View style={styles.upiBadge}>
+                <Text style={styles.upiBadgeText}>UPI</Text>
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text style={[styles.upiTitle, { color: theme.text }]}>
+                  Support via UPI
+                </Text>
+                <Text style={[styles.upiSubtitle, { color: theme.textMuted }]}>
+                  Google Pay • PhonePe • Paytm • BHIM • Cred
+                </Text>
+              </View>
+            </View>
+
+            {/* UPI ID Pill */}
+            <View
+              style={[
+                styles.upiIdBox,
+                {
+                  backgroundColor: isDark ? '#1A1E2C' : '#F1F5F9',
+                  borderColor: isDark ? '#2B3349' : '#CBD5E1',
+                },
+              ]}
+            >
+              <Text style={[styles.upiIdLabel, { color: theme.textMuted }]}>
+                UPI ID:
+              </Text>
+              <Text
+                style={[styles.upiIdText, { color: iconAccent }]}
+                selectable={true}
+              >
+                mehulreshamwala7@okhdfcbank
+              </Text>
+            </View>
+
+            {/* Action Buttons for UPI */}
+            <View style={styles.upiActionsRow}>
+              <TouchableOpacity
+                style={[
+                  styles.upiActionBtn,
+                  { backgroundColor: '#6366F1' },
+                ]}
+                onPress={async () => {
+                  const upiUrl =
+                    'upi://pay?pa=mehulreshamwala7@okhdfcbank&pn=Mehul%20Reshamwala&cu=INR&tn=Support%20WaveCast%20App';
+                  const supported = await Linking.canOpenURL(upiUrl).catch(() => false);
+                  if (supported) {
+                    Linking.openURL(upiUrl);
+                  } else {
+                    Alert.alert(
+                      'UPI ID',
+                      'Pay to: mehulreshamwala7@okhdfcbank\nPayee: Mehul Reshamwala',
+                      [
+                        {
+                          text: 'Share / Copy',
+                          onPress: () =>
+                            Share.share({
+                              message: 'mehulreshamwala7@okhdfcbank',
+                            }),
+                        },
+                        { text: 'OK' },
+                      ]
+                    );
+                  }
+                }}
+                activeOpacity={0.8}
+              >
+                <Sparkles size={15} color="#FFFFFF" />
+                <Text style={styles.upiActionBtnText}>Pay via UPI App</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.upiActionBtnSecondary,
+                  {
+                    backgroundColor: isDark ? '#1E2436' : '#F8FAFC',
+                    borderColor: isDark ? '#2B3349' : '#E2E8F0',
+                  },
+                ]}
+                onPress={() => setShowQrCode(!showQrCode)}
+                activeOpacity={0.8}
+              >
+                <QrCode size={15} color={iconAccent} />
+                <Text style={[styles.upiActionBtnSecText, { color: theme.text }]}>
+                  {showQrCode ? 'Hide QR' : 'Scan QR'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* QR Code preview when toggled */}
+            {showQrCode && (
+              <View style={styles.qrCodeContainer}>
+                <View style={styles.qrCodeWrapper}>
+                  <Image
+                    source={{
+                      uri: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi%3A%2F%2Fpay%3Fpa%3Dmehulreshamwala7%40okhdfcbank%26pn%3DMehul%2520Reshamwala%26cu%3DINR%26tn%3DSupport%2520WaveCast',
+                    }}
+                    style={styles.qrImage}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text style={[styles.qrCodeHint, { color: theme.textMuted }]}>
+                  Scan using Google Pay, PhonePe, Paytm, or BHIM
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </View>
+
+      {/* 6. ABOUT APP */}
       <View style={styles.section}>
         <View
           style={[
@@ -708,6 +876,135 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.04,
     shadowRadius: 2,
     elevation: 1,
+  },
+  donateHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  coffeeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFDD00',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginTop: 2,
+    marginBottom: 12,
+    gap: 8,
+  },
+  coffeeButtonText: {
+    color: '#000000',
+    fontSize: 14,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
+  upiCardContainer: {
+    marginTop: 2,
+  },
+  upiHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  upiBadge: {
+    backgroundColor: '#EA580C',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  upiBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  upiTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  upiSubtitle: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 1,
+  },
+  upiIdBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    marginBottom: 10,
+  },
+  upiIdLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    marginRight: 6,
+  },
+  upiIdText: {
+    fontSize: 13,
+    fontWeight: '700',
+    flex: 1,
+  },
+  upiActionsRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  upiActionBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 10,
+    gap: 6,
+  },
+  upiActionBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  upiActionBtnSecondary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    gap: 6,
+  },
+  upiActionBtnSecText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  qrCodeContainer: {
+    alignItems: 'center',
+    marginTop: 14,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(150, 150, 150, 0.15)',
+  },
+  qrCodeWrapper: {
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  qrImage: {
+    width: 160,
+    height: 160,
+  },
+  qrCodeHint: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 8,
+    textAlign: 'center',
   },
 });
 

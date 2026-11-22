@@ -1,6 +1,26 @@
 # WaveCast - React Native Podcast App
 
+<p align="left">
+  <a href="https://github.com/Mehul214/WavecastApp/releases/latest">
+    <img src="https://img.shields.io/badge/Download-Android%20APK-brightgreen.svg?style=flat-square&logo=android" alt="Download APK" />
+  </a>
+  <a href="https://buymeacoffee.com/mehulreshac" target="_blank">
+    <img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee" />
+  </a>
+  <a href="#-support-via-upi">
+    <img src="https://img.shields.io/badge/Donate-UPI-orange.svg?style=flat-square" alt="Donate UPI" />
+  </a>
+</p>
+
 A modern, full-featured podcast streaming application bootstrapped with **React Native Community CLI** (`@react-native-community/cli`), using **100% free open APIs** (Apple iTunes Search API + direct RSS XML Feeds) and **`@rntp/player`** for native iOS & Android audio streaming and background playback.
+
+---
+
+## 📲 Download Android APK
+
+Get the pre-built APK ready to install on your Android phone or tablet:
+
+➡️ **[Download WaveCast.apk (Latest Release)](https://github.com/Mehul214/WavecastApp/releases/latest)**
 
 ---
 
@@ -88,3 +108,32 @@ Every podcast host serves an RSS feed containing episode media links:
 </item>
 ```
 The app parses the MP3 URL and hands it directly to `TrackPlayer` to stream for free.
+
+---
+
+## 💖 Support App Maintenance & Donate
+
+Building and maintaining free, ad-free open-source applications takes dedicated effort. If **WaveCast** helps you enjoy podcasts or saves you subscription costs, please consider supporting development:
+
+- ☕️ **[Buy Me a Coffee](https://buymeacoffee.com/mehulreshac)**
+
+<p align="left">
+  <a href="https://buymeacoffee.com/mehulreshac" target="_blank">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="42" />
+  </a>
+</p>
+
+### ☕️ Support via UPI
+
+If you're in India or use any UPI-enabled payment app (Google Pay, PhonePe, Paytm, BHIM, Cred, Amazon Pay):
+
+- **UPI ID:** `mehulreshamwala7@okhdfcbank`
+- **Payee Name:** Mehul Reshamwala
+
+<p align="left">
+  <a href="upi://pay?pa=mehulreshamwala7@okhdfcbank&pn=Mehul%20Reshamwala&cu=INR&tn=Support%20WaveCast%20App">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi%3A%2F%2Fpay%3Fpa%3Dmehulreshamwala7%40okhdfcbank%26pn%3DMehul%2520Reshamwala%26cu%3DINR%26tn%3DSupport%2520WaveCast%2520App" alt="Scan to Pay with UPI" width="180" height="180" />
+  </a>
+  <br />
+  <sub>Scan with Google Pay / PhonePe / Paytm or <a href="upi://pay?pa=mehulreshamwala7@okhdfcbank&pn=Mehul%20Reshamwala&cu=INR&tn=Support%20WaveCast%20App">tap here on mobile to pay directly</a>.</sub>
+</p>
