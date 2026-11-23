@@ -33,10 +33,10 @@ You can install WaveCast using any of the following open-source methods:
 
 | Method | Description | Link |
 | :--- | :--- | :--- |
-| **Direct APK** | Standalone pre-built APK for any Android phone/tablet (~27 MB) | [⬇️ **Download WaveCast.apk (v1.0.0)**](https://github.com/Mehul214/WavecastApp/releases/download/v1.0.0/WaveCast.apk) |
+| **Direct APK** | Standalone pre-built APK for any Android phone/tablet (~27 MB) | [⬇️ **Download WaveCast.apk (v1.1.0)**](https://github.com/Mehul214/WavecastApp/releases/download/v1.1.0/WaveCast.apk) |
 | **Obtainium** | 1-click install & automatic updates directly from GitHub Releases | [⚡️ **Add to Obtainium**](https://apps.obtainium.imranr.dev/add?r=https://github.com/Mehul214/WavecastApp) |
 | **Orion Store** | Open-source Android app client catalog | [🪐 **Orion Store Request #3253**](https://github.com/RookieEnough/Orion-Data/issues/3253) |
-| **GitHub Releases** | Official releases page with assets & changelogs | [📦 **View v1.0.0 Release**](https://github.com/Mehul214/WavecastApp/releases/tag/v1.0.0) |
+| **GitHub Releases** | Official releases page with assets & changelogs | [📦 **View v1.1.0 Release**](https://github.com/Mehul214/WavecastApp/releases/tag/v1.1.0) |
 | **Web Site** | Clean web showcase with one-tap downloads | [🌐 **WaveCast Web Page**](https://mehul214.github.io/WavecastApp/) |
 
 ---
@@ -52,6 +52,9 @@ You can install WaveCast using any of the following open-source methods:
 
 ## 🎧 Features
 
+- **Offline Downloads & Playback (New in v1.1.0)**: Download podcast episodes directly to local device storage. Play offline with zero internet access, no buffering, and full background lock-screen audio support.
+- **Dedicated Downloads Tab (New in v1.1.0)**: Built-in offline library with badge counts, file size tracking, individual episode management, and one-tap storage cleanup.
+- **Ultra-Smooth Audio Scrubber (New in v1.1.0)**: Custom `PanResponder` touch controller providing instantaneous seeking with zero scroll interference.
 - **Free Podcast Discovery**: Uses the free public Apple iTunes Search API (no API key or registration required) to search podcasts across categories (Technology, News, Business, True Crime, Comedy, Science).
 - **Direct RSS Feed Parsing**: Fetches podcast RSS XML directly and parses episode audio enclosures (`<enclosure url="..." />`), titles, release dates, durations, and show notes using `fast-xml-parser`.
 - **Native Audio Streaming**: Uses `@rntp/player` for audio playback directly from publishers' MP3/AAC streams.
@@ -59,9 +62,10 @@ You can install WaveCast using any of the following open-source methods:
 - **Interactive UI**:
   - Category filter pills
   - Fast search with instant suggestions and clear button
-  - Podcast detail view with full episode list and release metadata
+  - Podcast detail view with full episode list, release metadata, and per-episode download status
   - Docked Mini Player with real-time progress bar and quick +15s jump
   - Full-Screen Player Modal with scrubber, speed controls (1x, 1.25x, 1.5x, 2x), and episode notes
+  - Real-time Circular Progress ring on download buttons with percentage completion
 
 ---
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   BackHandler,
   FlatList,
   Keyboard,
@@ -57,7 +58,17 @@ import { BottomNav, TabType } from './src/components/BottomNav';
 import { FavoritesTab } from './src/components/FavoritesTab';
 import { HistoryTab } from './src/components/HistoryTab';
 import { SettingsTab } from './src/components/SettingsTab';
+import { DownloadsTab } from './src/components/DownloadsTab';
 import { PodcastDetailScreen } from './src/components/PodcastDetailScreen';
+import {
+  DownloadedEpisode,
+  getDownloadedEpisodes,
+  downloadEpisode,
+  deleteDownloadedEpisode,
+  clearAllDownloads,
+  isDownloaded,
+  subscribeToDownloadProgress,
+} from './src/services/downloadService';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -103,6 +114,8 @@ function MainScreen() {
   // Favorites & History States
   const [favorites, setFavorites] = useState<Podcast[]>([]);
   const [history, setHistory] = useState<PlaybackHistoryItem[]>([]);
+  const [downloads, setDownloads] = useState<DownloadedEpisode[]>([]);
+  const [downloadingIds, setDownloadingIds] = useState<{ [id: string]: number }>({});
 
   // Loading States
   const [loadingPodcasts, setLoadingPodcasts] = useState(false);
@@ -124,6 +137,15 @@ function MainScreen() {
     getSettings().then(setSettings);
     getFavorites().then(setFavorites);
     getHistory().then(setHistory);
+    getDownloadedEpisodes().then(setDownloads);
+  }, []);
+
+  // Listen to download progress
+  useEffect(() => {
+    const unsub = subscribeToDownloadProgress((epId, progress) => {
+      setDownloadingIds((prev) => ({ ...prev, [epId]: progress }));
+    });
+    return unsub;
   }, []);
 
   // Hardware Back Button Handling on Android
@@ -272,6 +294,48 @@ function MainScreen() {
     setActiveTab(tab);
   };
 
+  const handleToggleDownloadEpisode = async (episode: Episode) => {
+    const isAlreadyDownloaded = isDownloaded(downloads, episode.id);
+    if (isAlreadyDownloaded) {
+      Alert.alert(
+        'Remove Download',
+        `Delete "${episode.title}" from offline downloads?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: async () => {
+              const updated = await deleteDownloadedEpisode(episode.id);
+              setDownloads(updated);
+            },
+          },
+        ]
+      );
+    } else {
+      try {
+        setDownloadingIds((prev) => ({ ...prev, [episode.id]: 0 }));
+        const downloaded = await downloadEpisode(episode, (progress) => {
+          setDownloadingIds((prev) => ({ ...prev, [episode.id]: progress }));
+        });
+        setDownloads((prev) => [downloaded, ...prev.filter((d) => d.id !== episode.id)]);
+      } catch (err: any) {
+        Alert.alert('Download Failed', err?.message || 'Could not download episode.');
+      } finally {
+        setDownloadingIds((prev) => {
+          const next = { ...prev };
+          delete next[episode.id];
+          return next;
+        });
+      }
+    }
+  };
+
+  const handleClearAllDownloads = async () => {
+    await clearAllDownloads();
+    setDownloads([]);
+  };
+
   const progressPercent =
     progress.duration > 0
       ? (progress.position / progress.duration) * 100
@@ -304,6 +368,10 @@ function MainScreen() {
           onBack={() => setSelectedPodcast(null)}
           onToggleFavorite={handleToggleFavoritePodcast}
           onPlayEpisode={handlePlayEpisode}
+          isEpisodeDownloaded={(id) => isDownloaded(downloads, id)}
+          isEpisodeDownloading={(id) => id in downloadingIds}
+          getDownloadProgress={(id) => downloadingIds[id] ?? -1}
+          onToggleDownloadEpisode={handleToggleDownloadEpisode}
           bottomPadding={listBottomPadding}
           theme={currentTheme}
         />
@@ -435,6 +503,21 @@ function MainScreen() {
               bottomPadding={listBottomPadding}
               theme={currentTheme}
             />
+          ) : activeTab === 'downloads' ? (
+            <DownloadsTab
+              downloads={downloads}
+              currentEpisodeId={currentEpisode?.id}
+              isPlaying={isPlaying}
+              onPlayEpisode={(ep) => handlePlayEpisode(ep)}
+              onDeleteDownload={async (id) => {
+                const updated = await deleteDownloadedEpisode(id);
+                setDownloads(updated);
+              }}
+              onClearAllDownloads={handleClearAllDownloads}
+              onGoDiscover={() => setActiveTab('discover')}
+              bottomPadding={listBottomPadding}
+              theme={currentTheme}
+            />
           ) : activeTab === 'history' ? (
             <HistoryTab
               history={history}
@@ -478,6 +561,7 @@ function MainScreen() {
         activeTab={activeTab}
         onSelectTab={handleTabChange}
         favoritesCount={favorites.length}
+        downloadsCount={downloads.length}
         historyCount={history.length}
         theme={currentTheme}
       />
@@ -494,6 +578,10 @@ function MainScreen() {
         onJumpForward={() => jumpForward(settings.skipForwardSeconds || 15)}
         onJumpBackward={() => jumpBackward(settings.skipBackwardSeconds || 15)}
         onSeek={handleSeek}
+        isDownloaded={currentEpisode ? isDownloaded(downloads, currentEpisode.id) : false}
+        isDownloading={currentEpisode ? currentEpisode.id in downloadingIds : false}
+        downloadProgress={currentEpisode ? downloadingIds[currentEpisode.id] ?? -1 : -1}
+        onToggleDownload={() => currentEpisode && handleToggleDownloadEpisode(currentEpisode)}
         isFavorite={
           selectedPodcast
             ? isFavorite(favorites, selectedPodcast.id)

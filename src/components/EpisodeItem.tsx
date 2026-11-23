@@ -1,14 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Play, Pause } from 'lucide-react-native';
+import { Play, Pause, ArrowDownCircle, CheckCircle } from 'lucide-react-native';
 import { Episode } from '../types/podcast';
 import { Theme } from '../theme/theme';
+import { CircularProgress } from './CircularProgress';
 
 interface EpisodeItemProps {
   episode: Episode;
   isPlaying: boolean;
   isCurrentTrack: boolean;
   onPlay: (episode: Episode) => void;
+  isDownloaded?: boolean;
+  isDownloading?: boolean;
+  downloadProgress?: number;
+  onToggleDownload?: (episode: Episode) => void;
   theme?: Theme;
 }
 
@@ -17,6 +22,10 @@ export const EpisodeItem: React.FC<EpisodeItemProps> = ({
   isPlaying,
   isCurrentTrack,
   onPlay,
+  isDownloaded = false,
+  isDownloading = false,
+  downloadProgress = -1,
+  onToggleDownload,
   theme,
 }) => {
   const isDark = theme ? theme.isDark : true;
@@ -117,27 +126,51 @@ export const EpisodeItem: React.FC<EpisodeItemProps> = ({
         ) : null}
       </View>
 
-      <TouchableOpacity
-        style={[
-          styles.playButton,
-          {
-            backgroundColor: playBtnBg,
-            borderColor: playBtnBorder,
-          },
-        ]}
-        onPress={() => onPlay(episode)}
-      >
-        {isCurrentTrack && isPlaying ? (
-          <Pause size={14} color="#FFFFFF" fill="#FFFFFF" />
-        ) : (
-          <Play
-            size={14}
-            color={playIconColor}
-            fill={playIconColor}
-            style={{ marginLeft: 2 }}
-          />
+      <View style={styles.actionsRow}>
+        {onToggleDownload && (
+          <TouchableOpacity
+            style={styles.downloadButton}
+            onPress={() => onToggleDownload(episode)}
+            disabled={isDownloading}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            {isDownloading ? (
+              <CircularProgress
+                size={22}
+                strokeWidth={2.2}
+                progress={downloadProgress}
+                color="#10B981"
+              />
+            ) : isDownloaded ? (
+              <CheckCircle size={18} color="#10B981" />
+            ) : (
+              <ArrowDownCircle size={18} color={isDark ? '#64748B' : '#94A3B8'} />
+            )}
+          </TouchableOpacity>
         )}
-      </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.playButton,
+            {
+              backgroundColor: playBtnBg,
+              borderColor: playBtnBorder,
+            },
+          ]}
+          onPress={() => onPlay(episode)}
+        >
+          {isCurrentTrack && isPlaying ? (
+            <Pause size={14} color="#FFFFFF" fill="#FFFFFF" />
+          ) : (
+            <Play
+              size={14}
+              color={playIconColor}
+              fill={playIconColor}
+              style={{ marginLeft: 2 }}
+            />
+          )}
+        </TouchableOpacity>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -185,6 +218,16 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 12,
     lineHeight: 16,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  downloadButton: {
+    padding: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   playButton: {
     width: 38,

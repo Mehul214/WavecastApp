@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
+  Linking,
   Modal,
+  PanResponder,
   Platform,
   ScrollView,
   StatusBar,
@@ -19,10 +22,13 @@ import {
   RotateCw,
   X,
   Heart,
+  ArrowDownCircle,
+  CheckCircle,
 } from 'lucide-react-native';
 import TrackPlayer from '@rntp/player';
 import { Episode } from '../types/podcast';
 import { Theme } from '../theme/theme';
+import { CircularProgress } from './CircularProgress';
 
 const { width } = Dimensions.get('window');
 const ARTWORK_SIZE = Math.min(width - 56, 320);
@@ -40,6 +46,10 @@ interface FullPlayerModalProps {
   onSeek: (position: number) => void;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  isDownloaded?: boolean;
+  isDownloading?: boolean;
+  downloadProgress?: number;
+  onToggleDownload?: () => void;
   theme?: Theme;
 }
 
@@ -56,10 +66,76 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
   onSeek,
   isFavorite = false,
   onToggleFavorite,
+  isDownloaded = false,
+  isDownloading = false,
+  downloadProgress = -1,
+  onToggleDownload,
   theme,
 }) => {
   const insets = useSafeAreaInsets();
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
+  const [isScrubbing, setIsScrubbing] = useState<boolean>(false);
+  const [scrubPosition, setScrubPosition] = useState<number>(0);
+
+  const isScrubbingRef = useRef<boolean>(false);
+  const scrubPositionRef = useRef<number>(0);
+  const trackRef = useRef<View>(null);
+  const trackWidthRef = useRef<number>(width - 48);
+  const trackPageXRef = useRef<number>(24);
+  const durationRef = useRef<number>(duration);
+  durationRef.current = duration;
+
+  const updateScrubFromPageX = useCallback((pageX: number) => {
+    const totalDuration = durationRef.current;
+    if (totalDuration <= 0) return;
+    const currentTrackWidth = trackWidthRef.current || width - 48;
+    const leftX = trackPageXRef.current;
+    const relX = pageX - leftX;
+    const ratio = Math.max(0, Math.min(1, relX / currentTrackWidth));
+    const targetPos = ratio * totalDuration;
+    scrubPositionRef.current = targetPos;
+    setScrubPosition(targetPos);
+  }, []);
+
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onStartShouldSetPanResponderCapture: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponderCapture: () => true,
+        onPanResponderTerminationRequest: () => false,
+
+        onPanResponderGrant: (evt) => {
+          isScrubbingRef.current = true;
+          setIsScrubbing(true);
+          trackRef.current?.measure((_x, _y, w, _h, px) => {
+            if (w > 0) trackWidthRef.current = w;
+            if (px !== undefined) trackPageXRef.current = px;
+          });
+          updateScrubFromPageX(evt.nativeEvent.pageX);
+        },
+
+        onPanResponderMove: (evt) => {
+          updateScrubFromPageX(evt.nativeEvent.pageX);
+        },
+
+        onPanResponderRelease: () => {
+          const finalPos = scrubPositionRef.current;
+          isScrubbingRef.current = false;
+          setIsScrubbing(false);
+          onSeek(finalPos);
+        },
+
+        onPanResponderTerminate: () => {
+          const finalPos = scrubPositionRef.current;
+          isScrubbingRef.current = false;
+          setIsScrubbing(false);
+          onSeek(finalPos);
+        },
+      }),
+    [updateScrubFromPageX, onSeek]
+  );
 
   if (!episode) return null;
 
@@ -108,9 +184,10 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
 
   const formattedDate = cleanDate(episode.pubDate);
 
+  const currentPosition = isScrubbing ? scrubPosition : position;
   const progressPercent =
     duration > 0
-      ? Math.min(100, Math.max(0, (position / duration) * 100))
+      ? Math.min(100, Math.max(0, (currentPosition / duration) * 100))
       : 0;
 
   const cycleSpeed = () => {
@@ -121,13 +198,24 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
     TrackPlayer.setPlaybackSpeed(newSpeed);
   };
 
-  const handleProgressBarPress = (event: any) => {
-    const touchX = event.nativeEvent.locationX;
-    const barWidth = width - 48;
-    const ratio = Math.max(0, Math.min(1, touchX / barWidth));
-    if (duration > 0) {
-      onSeek(ratio * duration);
-    }
+  const renderFormattedDescription = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s)]+)/g;
+    const parts = text.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (part.match(/^https?:\/\//)) {
+        return (
+          <Text
+            key={index}
+            style={[styles.linkText, { color: primaryAccent }]}
+            onPress={() => Linking.openURL(part).catch(() => {})}
+          >
+            {part}
+          </Text>
+        );
+      }
+      return <Text key={index}>{part}</Text>;
+    });
   };
 
   const isDark = theme ? theme.isDark : true;
@@ -219,6 +307,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
 
         <ScrollView
           showsVerticalScrollIndicator={false}
+          scrollEnabled={!isScrubbing}
           contentContainerStyle={styles.scrollContent}
         >
           {/* Cover Art Hero */}
@@ -257,10 +346,59 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
                     {formattedDate}
                   </Text>
                 )}
+                {isDownloaded && !isDownloading && (
+                  <View style={styles.offlineReadyBadge}>
+                    <CheckCircle size={11} color="#10B981" />
+                    <Text style={styles.offlineReadyText}>Offline Ready</Text>
+                  </View>
+                )}
               </View>
 
-              {onToggleFavorite && (
-                <TouchableOpacity
+              <View style={styles.titleActionsRow}>
+                {onToggleDownload && (
+                  <TouchableOpacity
+                    style={[
+                      styles.playerFavBtn,
+                      {
+                        backgroundColor: isDownloaded
+                          ? 'rgba(16, 185, 129, 0.15)'
+                          : isDark
+                          ? '#181C28'
+                          : '#FFFFFF',
+                        borderColor: isDownloaded
+                          ? 'rgba(16, 185, 129, 0.4)'
+                          : isDark
+                          ? '#262E44'
+                          : '#E2E8F0',
+                      },
+                      !isDark && !isDownloaded && styles.lightShadowSmall,
+                    ]}
+                    onPress={onToggleDownload}
+                    disabled={isDownloading}
+                    hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                    activeOpacity={0.7}
+                  >
+                    {isDownloading ? (
+                      <CircularProgress
+                        size={32}
+                        strokeWidth={2.8}
+                        progress={downloadProgress}
+                        color="#10B981"
+                      />
+                    ) : isDownloaded ? (
+                      <CheckCircle size={22} color="#10B981" strokeWidth={2.2} />
+                    ) : (
+                      <ArrowDownCircle
+                        size={22}
+                        color={isDark ? '#94A3B8' : '#64748B'}
+                        strokeWidth={2}
+                      />
+                    )}
+                  </TouchableOpacity>
+                )}
+
+                {onToggleFavorite && (
+                  <TouchableOpacity
                   style={[
                     styles.playerFavBtn,
                     {
@@ -295,41 +433,57 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
                   />
                 </TouchableOpacity>
               )}
+              </View>
             </View>
           </View>
 
           {/* Scrubber / Progress Bar */}
           <View style={styles.scrubberSection}>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              style={[
-                styles.progressBarTrack,
-                { backgroundColor: scrubberTrackBg },
-              ]}
-              onPress={handleProgressBarPress}
+            <View
+              ref={trackRef}
+              style={styles.scrubberTouchArea}
+              onLayout={(e) => {
+                const { width: w } = e.nativeEvent.layout;
+                if (w > 0) trackWidthRef.current = w;
+                trackRef.current?.measure((_x, _y, _w, _h, px) => {
+                  if (px !== undefined) trackPageXRef.current = px;
+                });
+              }}
+              {...panResponder.panHandlers}
             >
               <View
                 style={[
-                  styles.progressBarFill,
-                  { width: `${progressPercent}%` },
+                  styles.progressBarTrack,
+                  { backgroundColor: scrubberTrackBg },
                 ]}
-              />
-              <View
-                style={[
-                  styles.scrubberThumb,
-                  {
-                    left: `${Math.max(
-                      0,
-                      Math.min(97, progressPercent - 2)
-                    )}%`,
-                  },
-                ]}
-              />
-            </TouchableOpacity>
+                pointerEvents="none"
+              >
+                <View
+                  style={[
+                    styles.progressBarFill,
+                    {
+                      width: `${progressPercent}%`,
+                      backgroundColor: primaryAccent,
+                    },
+                  ]}
+                  pointerEvents="none"
+                />
+                <View
+                  style={[
+                    styles.scrubberThumb,
+                    isScrubbing && styles.scrubberThumbActive,
+                    {
+                      left: `${progressPercent}%`,
+                    },
+                  ]}
+                  pointerEvents="none"
+                />
+              </View>
+            </View>
 
             <View style={styles.timeLabels}>
               <Text style={[styles.timeText, { color: textMuted }]}>
-                {formatTime(position)}
+                {formatTime(currentPosition)}
               </Text>
               <Text style={[styles.timeText, { color: textMuted }]}>
                 {duration > 0 ? formatTime(duration) : '--:--'}
@@ -410,7 +564,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
                   { color: isDark ? '#94A3B8' : '#475569' },
                 ]}
               >
-                {episode.description}
+                {renderFormattedDescription(episode.description)}
               </Text>
             </View>
           ) : null}
@@ -534,6 +688,29 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
   },
+  titleActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 2,
+  },
+  offlineReadyBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+    gap: 4,
+    marginTop: 6,
+  },
+  offlineReadyText: {
+    color: '#10B981',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
   playerFavBtn: {
     width: 44,
     height: 44,
@@ -552,6 +729,10 @@ const styles = StyleSheet.create({
   scrubberSection: {
     marginBottom: 24,
   },
+  scrubberTouchArea: {
+    paddingVertical: 14,
+    justifyContent: 'center',
+  },
   progressBarTrack: {
     height: 6,
     backgroundColor: '#1C2133',
@@ -566,16 +747,27 @@ const styles = StyleSheet.create({
   },
   scrubberThumb: {
     position: 'absolute',
-    width: 14,
-    height: 14,
-    borderRadius: 7,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     backgroundColor: '#FFFFFF',
-    top: -4,
+    top: -5,
+    marginLeft: -8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOpacity: 0.35,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  scrubberThumbActive: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    top: -8,
+    marginLeft: -11,
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 6,
   },
   timeLabels: {
     flexDirection: 'row',
@@ -640,6 +832,10 @@ const styles = StyleSheet.create({
     color: '#94A3B8',
     fontSize: 13,
     lineHeight: 20,
+  },
+  linkText: {
+    textDecorationLine: 'underline',
+    fontWeight: '600',
   },
   lightShadowSmall: {
     shadowColor: '#000',

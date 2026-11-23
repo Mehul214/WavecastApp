@@ -1,0 +1,5 @@
+• Offline Downloads: Download podcast episodes to your device and listen anywhere with zero internet connection
+• Dedicated Downloads Tab: Manage your offline library, view storage usage breakdown, and play episodes offline
+• Real-time Download Progress: Circular progress ring with live percentage completion
+• Ultra-Smooth Scrubber: Responsive touch-seeking scrubber with zero lag and instant audio seek
+• Performance & CDN Fixes: Enhanced CDN download reliability with full redirect support

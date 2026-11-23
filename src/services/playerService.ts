@@ -2,6 +2,7 @@ import TrackPlayer, {
   PlayerCommand,
 } from '@rntp/player';
 import { Episode } from '../types/podcast';
+import { getLocalAudioUrl } from './downloadService';
 
 let isPlayerInitialized = false;
 
@@ -44,9 +45,13 @@ export async function setupAudioPlayer(): Promise<boolean> {
 export async function playEpisode(episode: Episode, startPosition: number = 0): Promise<void> {
   await setupAudioPlayer();
 
+  // If downloaded, seamlessly play offline local file with 0 buffering
+  const localUrl = await getLocalAudioUrl(episode.id);
+  const effectiveUrl = localUrl || episode.audioUrl;
+
   TrackPlayer.setMediaItem({
     mediaId: episode.id,
-    url: episode.audioUrl,
+    url: effectiveUrl,
     title: episode.title,
     artist: episode.podcastTitle || 'Podcast',
     artworkUrl: episode.artworkUrl,

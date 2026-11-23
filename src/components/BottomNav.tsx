@@ -1,15 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Compass, Heart, Clock, Settings } from 'lucide-react-native';
+import { Compass, Heart, ArrowDownCircle, Clock, Settings } from 'lucide-react-native';
 import { Theme } from '../theme/theme';
 
-export type TabType = 'discover' | 'favorites' | 'history' | 'settings';
+export type TabType = 'discover' | 'favorites' | 'downloads' | 'history' | 'settings';
 
 interface BottomNavProps {
   activeTab: TabType;
   onSelectTab: (tab: TabType) => void;
   favoritesCount: number;
+  downloadsCount?: number;
   historyCount: number;
   theme?: Theme;
 }
@@ -18,6 +19,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   activeTab,
   onSelectTab,
   favoritesCount,
+  downloadsCount = 0,
   historyCount,
   theme,
 }) => {
@@ -100,6 +102,43 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           ]}
         >
           Favorites
+        </Text>
+      </TouchableOpacity>
+
+      {/* Downloads Tab */}
+      <TouchableOpacity
+        style={styles.tabButton}
+        onPress={() => onSelectTab('downloads')}
+        activeOpacity={0.7}
+      >
+        <View style={styles.iconContainer}>
+          <ArrowDownCircle
+            size={22}
+            color={activeTab === 'downloads' ? '#10B981' : inactiveColor}
+            strokeWidth={activeTab === 'downloads' ? 2.5 : 1.8}
+          />
+          {downloadsCount > 0 && (
+            <View
+              style={[
+                styles.badge,
+                styles.downloadsBadge,
+                { borderColor: bgColor },
+              ]}
+            >
+              <Text style={styles.badgeText}>
+                {downloadsCount > 99 ? '99+' : downloadsCount}
+              </Text>
+            </View>
+          )}
+        </View>
+        <Text
+          style={[
+            styles.tabLabel,
+            { color: activeTab === 'downloads' ? '#10B981' : inactiveColor },
+            activeTab === 'downloads' && styles.tabLabelActive,
+          ]}
+        >
+          Downloads
         </Text>
       </TouchableOpacity>
 
@@ -216,6 +255,9 @@ const styles = StyleSheet.create({
   },
   historyBadge: {
     backgroundColor: '#6366F1',
+  },
+  downloadsBadge: {
+    backgroundColor: '#10B981',
   },
   badgeText: {
     color: '#FFFFFF',

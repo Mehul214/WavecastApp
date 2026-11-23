@@ -23,6 +23,10 @@ interface PodcastDetailScreenProps {
   onBack: () => void;
   onToggleFavorite: (podcast: Podcast) => void;
   onPlayEpisode: (episode: Episode) => void;
+  isEpisodeDownloaded?: (episodeId: string) => boolean;
+  isEpisodeDownloading?: (episodeId: string) => boolean;
+  getDownloadProgress?: (episodeId: string) => number;
+  onToggleDownloadEpisode?: (episode: Episode) => void;
   bottomPadding: number;
   theme?: Theme;
 }
@@ -37,6 +41,10 @@ export const PodcastDetailScreen: React.FC<PodcastDetailScreenProps> = ({
   onBack,
   onToggleFavorite,
   onPlayEpisode,
+  isEpisodeDownloaded,
+  isEpisodeDownloading,
+  getDownloadProgress,
+  onToggleDownloadEpisode,
   bottomPadding,
   theme,
 }) => {
@@ -222,6 +230,10 @@ export const PodcastDetailScreen: React.FC<PodcastDetailScreenProps> = ({
             isPlaying={isPlaying}
             isCurrentTrack={currentEpisodeId === item.id}
             onPlay={onPlayEpisode}
+            isDownloaded={isEpisodeDownloaded ? isEpisodeDownloaded(item.id) : false}
+            isDownloading={isEpisodeDownloading ? isEpisodeDownloading(item.id) : false}
+            downloadProgress={getDownloadProgress ? getDownloadProgress(item.id) : -1}
+            onToggleDownload={onToggleDownloadEpisode}
             theme={theme}
           />
         )}

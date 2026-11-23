@@ -40,12 +40,20 @@ export async function searchPodcasts(term: string, limit: number = 25): Promise<
 function cleanDescription(rawHtml: string = ''): string {
   if (!rawHtml) return '';
   return rawHtml
+    .replace(/<a\s+(?:[^>]*?\s+)?href=["']([^"']*)["'][^>]*>(.*?)<\/a>/gi, (_match, url, text) => {
+      const cleanText = text.replace(/<[^>]*>?/gm, '').trim();
+      return cleanText ? `${cleanText}: ${url}` : url;
+    })
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n\n')
     .replace(/<[^>]*>?/gm, '')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
 
